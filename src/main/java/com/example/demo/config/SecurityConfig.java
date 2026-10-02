@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    SecurityFilterChain api(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
+    SecurityFilterChain apiSecurityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         http.securityMatcher("/api/**")
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -42,7 +42,7 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    SecurityFilterChain web(HttpSecurity http) throws Exception {
+    SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/register", "/access-denied", "/css/**", "/images/**",
                                 "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
