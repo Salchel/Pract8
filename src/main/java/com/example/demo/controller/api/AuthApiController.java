@@ -1,4 +1,46 @@
 package com.example.demo.controller.api;
-import com.example.demo.dto.*;import com.example.demo.service.UserService;import io.swagger.v3.oas.annotations.*;import io.swagger.v3.oas.annotations.tags.Tag;import jakarta.validation.Valid;import java.time.*;import java.util.List;import org.springframework.beans.factory.annotation.Value;import org.springframework.http.ResponseEntity;import org.springframework.security.authentication.*;import org.springframework.security.core.Authentication;import org.springframework.security.oauth2.jwt.*;import org.springframework.web.bind.annotation.*;
-@RestController @RequestMapping("/api/auth") @Tag(name="Авторизация",description="Получение JWT для Swagger и API") public class AuthApiController {private final AuthenticationManager auth;private final JwtEncoder encoder;private final UserService users;@Value("${app.jwt.expiration}")long expiration;public AuthApiController(AuthenticationManager a,JwtEncoder e,UserService u){auth=a;encoder=e;users=u;}@PostMapping("/register")@ResponseStatus(org.springframework.http.HttpStatus.CREATED)@Operation(summary="Зарегистрировать покупателя")public java.util.Map<String,Object> register(@Valid @RequestBody RegisterRequest r){var u=users.register(r);return java.util.Map.of("id",u.getId(),"username",u.getUsername());}
-@PostMapping("/login")@Operation(summary="Войти и получить JWT")public TokenResponse login(@Valid @RequestBody LoginRequest r){Authentication a=auth.authenticate(new UsernamePasswordAuthenticationToken(r.username(),r.password()));Instant now=Instant.now();List<String> roles=a.getAuthorities().stream().map(Object::toString).toList();JwtClaimsSet claims=JwtClaimsSet.builder().issuer("pharmacy").issuedAt(now).expiresAt(now.plusSeconds(expiration)).subject(a.getName()).claim("roles",roles).build();String token=encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();return new TokenResponse(token,"Bearer",expiration);}}
+
+import com.example.demo.dto.*;
+import com.example.demo.security.JwtService;
+import com.example.demo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/auth")
+@Tag(name = "Авторизация", description = "Регистрация и получение JWT для Swagger и API")
+public class AuthApiController {
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final UserService users;
+
+    public AuthApiController(AuthenticationManager authenticationManager, JwtService jwtService, UserService users) {
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.users = users;
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Зарегистрировать покупателя")
+    public Map<String, Object> register(@Valid @RequestBody RegisterRequest request) {
+        var user = users.register(request);
+        return Map.of("id", user.getId(), "username", user.getUsername());
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "Войти и получить JWT")
+    public TokenResponse login(@Valid @RequestBody LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        return new TokenResponse(jwtService.generate(authentication), "Bearer", jwtService.getExpiration());
+    }
+}
