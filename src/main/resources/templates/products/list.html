@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/layout :: head('Товары')}"></head>
 <body>
 <header th:replace="~{fragments/layout :: header}"></header>
@@ -42,8 +42,9 @@
             <td th:text="${p.stockQuantity}"></td>
             <td th:text="${p.requiresPrescription} ? 'Да' : 'Нет'"></td>
             <td class="actions">
-                <a th:href="@{/products/{id}/edit(id=${p.id})}" class="btn btn-light">Изменить</a>
-                <form th:action="@{/products/{id}/delete(id=${p.id})}" method="post"
+                <form sec:authorize="isAuthenticated()" th:action="@{/cart/add/{id}(id=${p.id})}" method="post"><button class="btn btn-primary" th:disabled="${p.stockQuantity == 0}">В корзину</button></form>
+                <a sec:authorize="hasAnyRole('ADMIN','PHARMACIST')" th:href="@{/products/{id}/edit(id=${p.id})}" class="btn btn-light">Изменить</a>
+                <form sec:authorize="hasRole('ADMIN')" th:action="@{/products/{id}/delete(id=${p.id})}" method="post"
                       onsubmit="return confirm('Удалить товар?');">
                     <button type="submit" class="btn btn-danger">Удалить</button>
                 </form>

@@ -31,6 +31,7 @@ public class Manufacturer {
     private String country;
 
     // связь 1:N (один производитель - много товаров)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "manufacturer")
     private List<Product> products = new ArrayList<>();
 }

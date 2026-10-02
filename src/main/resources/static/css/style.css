@@ -100,4 +100,6 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-light
 .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
 .checkbox-row label { margin: 0; font-weight: 500; }
 .checkbox-row input { width: auto; }
-.hint { color: var(--muted); font-size: 14px; margin: 16px 0 0; }
+.hint { color: var(--muted); font-size: 14px; margin: 16px 0 0; }.link-button{background:none;border:0;color:var(--text);font:inherit;font-weight:500;cursor:pointer;margin-left:22px;padding:0}.link-button:hover{color:var(--green)}
+.nav form{display:inline-flex;align-items:center}.card strong{font-size:20px;color:var(--green-dark)}
+@media(max-width:700px){.header-inner,.nav{display:block}.nav a,.link-button{display:block;margin:10px 0}.hero{padding:35px 20px}.hero h1{font-size:30px}.table{display:block;overflow-x:auto}.search input{width:170px}}

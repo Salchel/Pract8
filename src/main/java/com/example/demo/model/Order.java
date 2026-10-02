@@ -38,11 +38,12 @@ public class Order {
 
     // связь N:1 (много заказов - один пользователь)
     @NotNull(message = "Выберите пользователя")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"password", "profile"})
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // связь 1:N (один заказ - много позиций)
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OrderItem> items = new ArrayList<>();
 }

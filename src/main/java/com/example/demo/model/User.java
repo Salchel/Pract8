@@ -26,6 +26,7 @@ public class User {
 
     // здесь хранится BCrypt-хэш (60 символов), поэтому длину пароля
     // (@Size) проверяем не тут, а в форме регистрации / DTO
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @NotBlank(message = "Пароль обязателен")
     @Column(nullable = false)
     private String password;
@@ -47,6 +48,7 @@ public class User {
     private Role role;
 
     // связь 1:1 (обратная сторона, внешний ключ лежит в user_profiles)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserProfile profile;
 }

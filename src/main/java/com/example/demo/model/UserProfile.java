@@ -36,6 +36,7 @@ public class UserProfile {
 
     // связь 1:1 (владелец связи, здесь лежит внешний ключ user_id)
     @NotNull(message = "Выберите пользователя")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"password", "profile"})
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;

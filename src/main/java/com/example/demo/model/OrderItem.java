@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_items")
+@Table(name = "order_items", uniqueConstraints = @UniqueConstraint(columnNames = {"order_id", "product_id"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +23,7 @@ public class OrderItem {
 
     // связь N:1 с заказом
     @NotNull(message = "Выберите заказ")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;

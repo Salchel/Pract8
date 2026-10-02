@@ -31,6 +31,7 @@ public class Category {
     private String description;
 
     // связь 1:N (одна категория - много товаров)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
 }
