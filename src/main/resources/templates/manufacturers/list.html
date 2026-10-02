@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Производители')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1>Производители</h1>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="toolbar">
+        <form th:action="@{/manufacturers}" method="get" class="search">
+            <input type="text" name="q" th:value="${q}" placeholder="Поиск по id или названию">
+            <button type="submit" class="btn">Найти</button>
+            <a th:if="${q != null and !q.isBlank()}" th:href="@{/manufacturers}" class="btn btn-light">Сбросить</a>
+        </form>
+        <a th:href="@{/manufacturers/new}" class="btn btn-primary">+ Добавить производителя</a>
+    </div>
+
+    <table class="table" th:if="${!manufacturers.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Страна</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${manufacturers}">
+            <td th:text="${m.id}"></td>
+            <td th:text="${m.name}"></td>
+            <td th:text="${m.country}"></td>
+            <td class="actions">
+                <a th:href="@{/manufacturers/{id}/edit(id=${m.id})}" class="btn btn-light">Изменить</a>
+                <form th:action="@{/manufacturers/{id}/delete(id=${m.id})}" method="post"
+                      onsubmit="return confirm('Удалить производителя?');">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${manufacturers.isEmpty()}" class="empty">Ничего не найдено.</p>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

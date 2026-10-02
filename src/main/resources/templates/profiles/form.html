@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Профиль')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1 th:text="${profile.id == null} ? 'Новый профиль' : 'Редактирование профиля'"></h1>
+
+    <form th:action="@{/profiles}" th:object="${profile}" method="post" class="form">
+        <input type="hidden" th:field="*{id}">
+
+        <label for="user">Пользователь</label>
+        <select id="user" th:field="*{user.id}"
+                th:classappend="${#fields.hasErrors('user')} ? 'invalid'">
+            <option value="">— выберите пользователя —</option>
+            <option th:each="u : ${users}" th:value="${u.id}"
+                    th:text="${u.username + ' — ' + u.fullName}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('user')}" th:errors="*{user}"></span>
+
+        <label for="address">Адрес</label>
+        <input type="text" id="address" th:field="*{address}"
+               th:classappend="${#fields.hasErrors('address')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+
+        <label for="phone">Телефон</label>
+        <input type="text" id="phone" th:field="*{phone}" placeholder="+79990000000"
+               th:classappend="${#fields.hasErrors('phone')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+
+        <label for="bonusPoints">Бонусные баллы</label>
+        <input type="text" id="bonusPoints" inputmode="numeric" th:field="*{bonusPoints}"
+               th:classappend="${#fields.hasErrors('bonusPoints')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('bonusPoints')}" th:errors="*{bonusPoints}"></span>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a th:href="@{/profiles}" class="btn btn-light">Отмена</a>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

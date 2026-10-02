@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Товар')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1 th:text="${product.id == null} ? 'Новый товар' : 'Редактирование товара'"></h1>
+
+    <form th:action="@{/products}" th:object="${product}" method="post" class="form">
+        <input type="hidden" th:field="*{id}">
+
+        <label for="title">Название</label>
+        <input type="text" id="title" th:field="*{title}"
+               th:classappend="${#fields.hasErrors('title')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+
+        <label for="description">Описание</label>
+        <textarea id="description" rows="4" th:field="*{description}"
+                  th:classappend="${#fields.hasErrors('description')} ? 'invalid'"></textarea>
+        <span class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+
+        <label for="price">Цена, ₽</label>
+        <input type="text" id="price" inputmode="decimal" th:field="*{price}"
+               th:classappend="${#fields.hasErrors('price')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+
+        <label for="stockQuantity">Количество на складе</label>
+        <input type="text" id="stockQuantity" inputmode="numeric" th:field="*{stockQuantity}"
+               th:classappend="${#fields.hasErrors('stockQuantity')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}"></span>
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="requiresPrescription" th:field="*{requiresPrescription}">
+            <label for="requiresPrescription">Отпускается по рецепту</label>
+        </div>
+
+        <label for="imageUrl">Ссылка на картинку</label>
+        <input type="text" id="imageUrl" th:field="*{imageUrl}"
+               th:classappend="${#fields.hasErrors('imageUrl')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></span>
+
+        <!-- Внешние ключи (ПР5): выбор по названию, а не по id -->
+        <label for="category">Категория</label>
+        <select id="category" th:field="*{category.id}"
+                th:classappend="${#fields.hasErrors('category')} ? 'invalid'">
+            <option value="">— выберите категорию —</option>
+            <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></span>
+
+        <label for="manufacturer">Производитель</label>
+        <select id="manufacturer" th:field="*{manufacturer.id}"
+                th:classappend="${#fields.hasErrors('manufacturer')} ? 'invalid'">
+            <option value="">— выберите производителя —</option>
+            <option th:each="m : ${manufacturers}" th:value="${m.id}" th:text="${m.name}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('manufacturer')}" th:errors="*{manufacturer}"></span>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a th:href="@{/products}" class="btn btn-light">Отмена</a>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

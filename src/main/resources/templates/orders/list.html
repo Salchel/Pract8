@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Заказы')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1>Заказы</h1>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="toolbar">
+        <form th:action="@{/orders}" method="get" class="search">
+            <input type="text" name="q" th:value="${q}" placeholder="Поиск по номеру заказа или логину">
+            <button type="submit" class="btn">Найти</button>
+            <a th:if="${q != null and !q.isBlank()}" th:href="@{/orders}" class="btn btn-light">Сбросить</a>
+        </form>
+        <a th:href="@{/orders/new}" class="btn btn-primary">+ Создать заказ</a>
+    </div>
+
+    <table class="table" th:if="${!orders.isEmpty()}">
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>Дата</th>
+            <th>Пользователь</th>
+            <th>Статус</th>
+            <th>Сумма, ₽</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td th:text="${o.id}"></td>
+            <td th:text="${#temporals.format(o.orderDate, 'dd.MM.yyyy HH:mm')}"></td>
+            <td th:text="${o.user.username}"></td>
+            <td th:text="${o.status}"></td>
+            <td th:text="${#numbers.formatDecimal(o.totalAmount, 1, 'WHITESPACE', 2, 'COMMA')}"></td>
+            <td class="actions">
+                <a th:href="@{/order-items(q=${o.id})}" class="btn btn-light">Позиции</a>
+                <a th:href="@{/orders/{id}/edit(id=${o.id})}" class="btn btn-light">Изменить</a>
+                <form th:action="@{/orders/{id}/delete(id=${o.id})}" method="post"
+                      onsubmit="return confirm('Удалить заказ вместе с позициями?');">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${orders.isEmpty()}" class="empty">Ничего не найдено.</p>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

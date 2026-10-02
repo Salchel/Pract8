@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Профили')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1>Профили пользователей</h1>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="toolbar">
+        <form th:action="@{/profiles}" method="get" class="search">
+            <input type="text" name="q" th:value="${q}" placeholder="Поиск по id, логину, телефону, адресу">
+            <button type="submit" class="btn">Найти</button>
+            <a th:if="${q != null and !q.isBlank()}" th:href="@{/profiles}" class="btn btn-light">Сбросить</a>
+        </form>
+        <a th:href="@{/profiles/new}" class="btn btn-primary">+ Добавить профиль</a>
+    </div>
+
+    <table class="table" th:if="${!profiles.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Пользователь</th>
+            <th>Телефон</th>
+            <th>Адрес</th>
+            <th>Бонусы</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${profiles}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.user.username}"></td>
+            <td th:text="${p.phone}"></td>
+            <td th:text="${p.address}"></td>
+            <td th:text="${p.bonusPoints}"></td>
+            <td class="actions">
+                <a th:href="@{/profiles/{id}/edit(id=${p.id})}" class="btn btn-light">Изменить</a>
+                <form th:action="@{/profiles/{id}/delete(id=${p.id})}" method="post"
+                      onsubmit="return confirm('Удалить профиль?');">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${profiles.isEmpty()}" class="empty">Ничего не найдено.</p>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

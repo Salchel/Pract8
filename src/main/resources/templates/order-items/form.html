@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Позиция заказа')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1 th:text="${item.id == null} ? 'Новая позиция заказа' : 'Редактирование позиции'"></h1>
+
+    <form th:action="@{/order-items}" th:object="${item}" method="post" class="form">
+        <input type="hidden" th:field="*{id}">
+
+        <label for="order">Заказ</label>
+        <select id="order" th:field="*{order.id}"
+                th:classappend="${#fields.hasErrors('order')} ? 'invalid'">
+            <option value="">— выберите заказ —</option>
+            <option th:each="o : ${orders}" th:value="${o.id}"
+                    th:text="${'№' + o.id + ' — ' + o.user.username + ' (' + o.status + ')'}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('order')}" th:errors="*{order}"></span>
+
+        <label for="product">Товар</label>
+        <select id="product" th:field="*{product.id}"
+                th:classappend="${#fields.hasErrors('product')} ? 'invalid'">
+            <option value="">— выберите товар —</option>
+            <option th:each="p : ${products}" th:value="${p.id}"
+                    th:text="${p.title + ' — ' + #numbers.formatDecimal(p.price, 1, 'WHITESPACE', 2, 'COMMA') + ' ₽'}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('product')}" th:errors="*{product}"></span>
+
+        <label for="quantity">Количество</label>
+        <input type="text" id="quantity" inputmode="numeric" th:field="*{quantity}"
+               th:classappend="${#fields.hasErrors('quantity')} ? 'invalid'">
+        <span class="error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+
+        <p class="hint">Цена подставляется автоматически из товара и фиксируется на момент добавления.</p>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a th:href="@{/order-items}" class="btn btn-light">Отмена</a>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

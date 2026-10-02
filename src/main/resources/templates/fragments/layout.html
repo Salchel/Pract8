@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Подключение: <head th:replace="~{fragments/layout :: head('Заголовок страницы')}"></head> -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' — Аптека'">Аптека</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- Подключение: <header th:replace="~{fragments/layout :: header}"></header> -->
+<header class="site-header" th:fragment="header">
+    <div class="container header-inner">
+        <a th:href="@{/}" class="logo">&#10010; Аптека</a>
+        <nav class="nav">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/products}">Товары</a>
+            <a th:href="@{/categories}">Категории</a>
+            <a th:href="@{/manufacturers}">Производители</a>
+            <a th:href="@{/orders}">Заказы</a>
+            <a th:href="@{/order-items}">Позиции</a>
+            <a th:href="@{/profiles}">Профили</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Подключение: <footer th:replace="~{fragments/layout :: footer}"></footer> -->
+<footer class="site-footer" th:fragment="footer">
+    <div class="container">&copy; Аптека. Учебный проект.</div>
+</footer>
+
+</body>
+</html>

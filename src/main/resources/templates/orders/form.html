@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Заказ')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1 th:text="${order.id == null} ? 'Новый заказ' : 'Редактирование заказа №' + ${order.id}"></h1>
+
+    <form th:action="@{/orders}" th:object="${order}" method="post" class="form">
+        <input type="hidden" th:field="*{id}">
+
+        <label for="user">Пользователь</label>
+        <select id="user" th:field="*{user.id}"
+                th:classappend="${#fields.hasErrors('user')} ? 'invalid'">
+            <option value="">— выберите пользователя —</option>
+            <option th:each="u : ${users}" th:value="${u.id}"
+                    th:text="${u.username + ' — ' + u.fullName}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('user')}" th:errors="*{user}"></span>
+
+        <label for="status">Статус</label>
+        <select id="status" th:field="*{status}"
+                th:classappend="${#fields.hasErrors('status')} ? 'invalid'">
+            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></span>
+
+        <p class="hint">Состав и сумма заказа считаются по позициям заказа.</p>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a th:href="@{/orders}" class="btn btn-light">Отмена</a>
+        </div>
+    </form>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

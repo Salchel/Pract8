@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Товары')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="container">
+    <h1>Товары</h1>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="toolbar">
+        <form th:action="@{/products}" method="get" class="search">
+            <input type="text" name="q" th:value="${q}" placeholder="Поиск по id или названию">
+            <button type="submit" class="btn">Найти</button>
+            <a th:if="${q != null and !q.isBlank()}" th:href="@{/products}" class="btn btn-light">Сбросить</a>
+        </form>
+        <a th:href="@{/products/new}" class="btn btn-primary">+ Добавить товар</a>
+    </div>
+
+    <table class="table" th:if="${!products.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Категория</th>
+            <th>Производитель</th>
+            <th>Цена, ₽</th>
+            <th>На складе</th>
+            <th>Рецепт</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${products}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.title}"></td>
+            <td th:text="${p.category.name}"></td>
+            <td th:text="${p.manufacturer.name}"></td>
+            <td th:text="${#numbers.formatDecimal(p.price, 1, 'WHITESPACE', 2, 'COMMA')}"></td>
+            <td th:text="${p.stockQuantity}"></td>
+            <td th:text="${p.requiresPrescription} ? 'Да' : 'Нет'"></td>
+            <td class="actions">
+                <a th:href="@{/products/{id}/edit(id=${p.id})}" class="btn btn-light">Изменить</a>
+                <form th:action="@{/products/{id}/delete(id=${p.id})}" method="post"
+                      onsubmit="return confirm('Удалить товар?');">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${products.isEmpty()}" class="empty">Ничего не найдено.</p>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
